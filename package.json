@@ -1,0 +1,21 @@
+{
+  "name": "@atom-packages/data",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf ./public",
+    "build": "node ./src/build.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "brotli": "^1.3.2",
+    "ejs": "^3.1.6",
+    "html-minifier-terser": "^5.1.1",
+    "is-ci": "^3.0.0",
+    "make-fetch-happen": "^8.0.14",
+    "pako": "^2.0.3",
+    "rimraf": "^3.0.2"
+  }
+}

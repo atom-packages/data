@@ -1,0 +1,8 @@
+.cache/
+.env
+*.zip
+all.json
+gh-pages
+gh-pages.pub
+node_modules/
+public/
