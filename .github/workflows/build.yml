@@ -40,8 +40,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Write update date
-        run: echo $(date --iso-8601=seconds) > .lastUpdated
+      - name: Write last updated
+        run: echo $(date --iso-8601=seconds) > last-update
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -53,5 +53,5 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
-          message: 'Update .lastUpdate'
-          add: '.lastUpdated --force'
+          message: 'Update last-update'
+          add: 'last-update --force'
