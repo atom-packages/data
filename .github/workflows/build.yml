@@ -55,3 +55,5 @@ jobs:
         with:
           message: 'Update last-update'
           add: 'last-update --force'
+          author_name: autobot
+          author_email: noreply@idleberg.com
