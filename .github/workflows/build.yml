@@ -55,5 +55,5 @@ jobs:
         with:
           message: 'Update last-update'
           add: 'last-update --force'
-          author_name: autobot
+          author_name: atom-packages-bot
           author_email: atom-packages@users.noreply.github.com
