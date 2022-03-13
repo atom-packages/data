@@ -18,8 +18,13 @@ const htmlMinifyOptions = {
 };
 
 const ignoredPackages = [
+    // Installation fails IIRC
     '☃',
-    '0.1.0'
+    '0.1.0',
+
+    // Spam or malware
+    'slot-paling-gacor-setiap-hari',
+    'slotonline'
 ];
 
 const ignoredDescriptions = [
