@@ -23,9 +23,18 @@ const ignoredPackages = [
     '0.1.0',
 
     // Spam or malware
+    'demo-slot-joker-gacor',
+    'hoki-slot',
+    'slot-bonus-new-member',
+    'slot-dana',
+    'slot-deposit-dana-10000',
+    'slot-deposit-pulsa',
+    'slot-gacor-hari-ini',
+    'slot-hoki',
     'slot-paling-gacor-setiap-hari',
+    'slot-pulsa',
+    'slothoki',
     'slotonline'
-];
 
 const ignoredDescriptions = [
     'A short description of your package',
@@ -77,7 +86,7 @@ async function saveData(fileName, packages) {
     }
 
     const packages = (await Promise.all(rawPackages.map(async item => {
-        if (ignoredPackages.includes(item.name)) {
+        if (ignoredPackages.includes(item.name) || item.name.startsWith('slot-')) {
             console.log(`Ignoring package ${item.name}`);
             return;
         }
