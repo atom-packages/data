@@ -84,6 +84,8 @@ async function saveData(fileName, packages) {
 
     if (!rawPackages?.length) {
         throw Error('Could not retrieve packages');
+    } else if (rawPackages.length <= 414) {
+        throw Error('Package retrieval incomplete');
     }
 
     const packages = (await Promise.all(rawPackages.map(async item => {
