@@ -2,7 +2,7 @@ import { minify as htmlMinify } from 'html-minifier-terser';
 import { promises as fs } from 'fs';
 import { render } from 'ejs';
 import { resolve } from 'path';
-import brotli from 'brotli';
+// import brotli from 'brotli';
 import isCI from 'is-ci';
 import MFH from 'make-fetch-happen';
 import pako from 'pako';
@@ -53,8 +53,8 @@ async function saveData(fileName, packages) {
     const gzJson = pako.gzip(packagesJson);
     await fs.writeFile(`public/${fileName}.json.gz`, gzJson);
 
-    const brJson = brotli.compress(Buffer.from(packagesJson));
-    await fs.writeFile(`public/${fileName}.json.br`, brJson);
+    // const brJson = brotli.compress(Buffer.from(packagesJson));
+    // await fs.writeFile(`public/${fileName}.json.br`, brJson);
 }
 
 (async () => {
