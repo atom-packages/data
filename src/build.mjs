@@ -88,6 +88,8 @@ async function saveData(fileName, packages) {
         throw Error('Package retrieval incomplete');
     }
 
+    const packages = [];
+
     const packages = (await Promise.all(rawPackages.map(async item => {
         if (ignoredPackages.includes(item.name) || item.name.startsWith('slot-')) {
             console.log(`Ignoring package ${item.name}`);
