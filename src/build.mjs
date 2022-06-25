@@ -59,7 +59,7 @@ async function saveData(fileName, packages) {
 
 (async () => {
     try {
-        fs.mkdir('public');
+        await fs.mkdir('public');
         console.log('Output folder created');
     } catch(err) {
         console.log('Output folder already exists');
