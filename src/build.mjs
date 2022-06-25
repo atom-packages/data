@@ -2,7 +2,7 @@ import { minify as htmlMinify } from 'html-minifier-terser';
 import { promises as fs } from 'fs';
 import { render } from 'ejs';
 import { resolve } from 'path';
-import brotli from 'brotli';
+// import brotli from 'brotli';
 import isCI from 'is-ci';
 import MFH from 'make-fetch-happen';
 import pako from 'pako';
