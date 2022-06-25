@@ -35,6 +35,7 @@ const ignoredPackages = [
     'slot-pulsa',
     'slothoki',
     'slotonline'
+];
 
 const ignoredDescriptions = [
     'A short description of your package',
