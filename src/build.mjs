@@ -99,8 +99,8 @@ async function saveData(fileName, packages) {
                     : undefined
                 : undefined,
             version: item.metadata?.version,
-            downloads: item.downloads || undefined,
-            stars: item.stargazers_count || undefined,
+            downloads: item.downloads,
+            stars: item.stargazers_count,
             theme: item.metadata?.theme || undefined
         }
     }))).filter(item => item);
