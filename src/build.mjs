@@ -2,7 +2,6 @@ import { minify as htmlMinify } from 'html-minifier-terser';
 import { promises as fs } from 'fs';
 import { render } from 'ejs';
 import { resolve } from 'path';
-import brotli from 'brotli';
 import isCI from 'is-ci';
 import MFH from 'make-fetch-happen';
 import pako from 'pako';
@@ -35,6 +34,7 @@ const ignoredPackages = [
     'slot-pulsa',
     'slothoki',
     'slotonline'
+];
 
 const ignoredDescriptions = [
     'A short description of your package',
@@ -51,14 +51,11 @@ async function saveData(fileName, packages) {
 
     const gzJson = pako.gzip(packagesJson);
     await fs.writeFile(`public/${fileName}.json.gz`, gzJson);
-
-    const brJson = brotli.compress(Buffer.from(packagesJson));
-    await fs.writeFile(`public/${fileName}.json.br`, brJson);
 }
 
 (async () => {
     try {
-        fs.mkdir('public');
+        await fs.mkdir('public');
         console.log('Output folder created');
     } catch(err) {
         console.log('Output folder already exists');
@@ -83,6 +80,8 @@ async function saveData(fileName, packages) {
 
     if (!rawPackages?.length) {
         throw Error('Could not retrieve packages');
+    } else if (rawPackages.length <= 414) {
+        throw Error('Package retrieval incomplete');
     }
 
     const packages = (await Promise.all(rawPackages.map(async item => {
