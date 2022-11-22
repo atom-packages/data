@@ -44,6 +44,11 @@ const ignoredDescriptions = [
 ];
 
 async function saveData(fileName, packages) {
+    if (/^[\w-]+$/.test(fileName)) {
+        console.error(`Skipping invalid filename: ${fileName}.json`);
+        return;
+    }
+
     packages.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
     const packagesJson = JSON.stringify(packages);
