@@ -19,21 +19,7 @@ const htmlMinifyOptions = {
 const ignoredPackages = [
     // Installation fails IIRC
     '☃',
-    '0.1.0',
-
-    // Spam or malware
-    'demo-slot-joker-gacor',
-    'hoki-slot',
-    'slot-bonus-new-member',
-    'slot-dana',
-    'slot-deposit-dana-10000',
-    'slot-deposit-pulsa',
-    'slot-gacor-hari-ini',
-    'slot-hoki',
-    'slot-paling-gacor-setiap-hari',
-    'slot-pulsa',
-    'slothoki',
-    'slotonline'
+    '0.1.0'
 ];
 
 const ignoredDescriptions = [
@@ -70,9 +56,9 @@ async function saveData(fileName, packages) {
     let upperLimit = isCI ? Infinity : 6;
 
     for (let page = 1; page < upperLimit; page++) {
-        console.log(`Downloading https://atom.io/api/packages?page=${page}`);
+        console.log(`Downloading https://api.pulsar-edit.dev/api/packages?page=${page}`);
 
-        const response = await fetch(`https://atom.io/api/packages?page=${page}`);
+        const response = await fetch(`https://api.pulsar-edit.dev/api/packages?page=${page}`);
         const json = await response.json();
         
         if (!json?.length) break;
