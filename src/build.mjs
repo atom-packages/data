@@ -76,7 +76,7 @@ async function saveData(fileName, packages) {
     }
 
     const packages = (await Promise.all(rawPackages.map(async item => {
-        if (ignoredPackages.includes(item.name) || item.name.startsWith('slot-')) {
+        if (ignoredPackages.includes(item.name) || item.match(/[^a-z0-9-]/) || item.name.includes('slot-') || item.name.includes('-slot')) {
             console.log(`Ignoring package ${item.name}`);
             return;
         }
