@@ -30,7 +30,7 @@ const ignoredDescriptions = [
 ];
 
 async function saveData(fileName, packages) {
-    if (/^[\w-]+$/.test(fileName)) {
+    if (/^[\w-]+.json$/.test(fileName)) {
         console.error(`Skipping invalid filename: ${fileName}.json`);
         return;
     }
