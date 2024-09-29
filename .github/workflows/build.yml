@@ -6,6 +6,7 @@ on:
       - main
   schedule:
     - cron: '0,30 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -51,7 +52,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
           force_orphan: true
-          
+
       - name: Keep workflow alive
         uses: gautamkrishnar/keepalive-workflow@v1
         with:
