@@ -8,7 +8,6 @@ import pako from 'pako';
 
 const fetch = MFH.defaults({
     cacheManager: '.cache',
-    cache: 'force-cache'
 });
 
 const htmlMinifyOptions = {
