@@ -1,13 +1,14 @@
 import { minify as htmlMinify } from 'html-minifier-terser';
 import { promises as fs } from 'fs';
-import { render } from 'ejs';
+import { cache, render } from 'ejs';
 import { resolve } from 'path';
 import isCI from 'is-ci';
 import MFH from 'make-fetch-happen';
 import pako from 'pako';
 
 const fetch = MFH.defaults({
-    cacheManager: '.cache'
+    cacheManager: '.cache',
+    cache: 'force-cache'
 });
 
 const htmlMinifyOptions = {
@@ -60,9 +61,9 @@ async function saveData(fileName, packages) {
 
         const response = await fetch(`https://api.pulsar-edit.dev/api/packages?page=${page}`);
         const json = await response.json();
-        
+
         if (!json?.length) break;
-            
+
         rawPackages = [
             ...rawPackages,
             ...json
@@ -82,7 +83,7 @@ async function saveData(fileName, packages) {
             if (!ignoredPackages.includes(item.name)) {
                 ignoredPackages.push(item.name);
             }
-            
+
             return;
         }
 
@@ -94,8 +95,8 @@ async function saveData(fileName, packages) {
                     : undefined
                 : undefined,
             version: item.metadata?.version,
-            downloads: item.downloads,
-            stars: item.stargazers_count,
+            downloads: Number(item.downloads),
+            stars: Number(item.stargazers_count),
             theme: item.metadata?.theme || undefined
         }
     }))).filter(item => item);
@@ -106,14 +107,14 @@ async function saveData(fileName, packages) {
 
     packages.map(item => {
         let firstLetter = item.name.charAt(0).toLowerCase();
-        
-        if (!isNaN(firstLetter)) {
+
+        if (!Number.isInteger(firstLetter)) {
             firstLetter = '0-9';
         }
 
         if (item.name === '-vimes45-syntax') {
             firstLetter = 'v';
-        }            
+        }
 
         if (!groupedPackages[firstLetter]) {
             groupedPackages[firstLetter] = [];
@@ -130,7 +131,7 @@ async function saveData(fileName, packages) {
         ignored: ignoredPackages.length,
         lastUpdated: new Date().toLocaleString('en-GB', { timeZone: 'UTC' })
     }), htmlMinifyOptions);
-    
+
     const favicon = await fs.readFile(resolve('./src/favicon.svg'), { encoding: 'utf8' });
     const faviconMinified = await htmlMinify(favicon, {
         ...htmlMinifyOptions,
