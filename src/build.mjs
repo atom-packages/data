@@ -29,6 +29,37 @@ const ignoredDescriptions = [
     'A short description of your UI theme',
 ];
 
+const METADATA_CACHE = '.cache/packages-metadata.json';
+const CACHE_MAX_AGE = isCI ? 0 : 14400000; // 4 hours for local dev (matches CI cron schedule), always fresh in CI
+
+async function getCachedMetadata() {
+    try {
+        const data = await fs.readFile(METADATA_CACHE, 'utf8');
+        const { packages, etag, timestamp } = JSON.parse(data);
+
+        if (Date.now() - timestamp < CACHE_MAX_AGE) {
+            console.log('Cache is fresh, using cached data');
+            return { packages, etag, fromCache: true };
+        }
+
+        console.log('Cache exists but is stale, will check for updates');
+        return { packages, etag, fromCache: false };
+    } catch {
+        console.log('No cache found, will fetch fresh data');
+        return { fromCache: false };
+    }
+}
+
+async function saveMetadataCache(packages, etag) {
+    await fs.mkdir('.cache', { recursive: true });
+    await fs.writeFile(METADATA_CACHE, JSON.stringify({
+        packages,
+        etag,
+        timestamp: Date.now()
+    }));
+    console.log('Cached package metadata saved');
+}
+
 async function saveData(fileName, packages) {
     if (/^[\w-]+.json$/.test(fileName)) {
         console.error(`Skipping invalid filename: ${fileName}.json`);
@@ -53,20 +84,45 @@ async function saveData(fileName, packages) {
     }
 
     let rawPackages = [];
-    let upperLimit = isCI ? Infinity : 6;
+    const cachedMeta = await getCachedMetadata();
 
-    for (let page = 1; page < upperLimit; page++) {
-        console.log(`Downloading https://api.pulsar-edit.dev/api/packages?page=${page}`);
+    if (cachedMeta.fromCache) {
+        rawPackages = cachedMeta.packages;
+    } else {
+        let upperLimit = isCI ? Infinity : 6;
+        let collectedEtag = null;
 
-        const response = await fetch(`https://api.pulsar-edit.dev/api/packages?page=${page}`);
-        const json = await response.json();
+        for (let page = 1; page < upperLimit; page++) {
+            console.log(`Downloading https://api.pulsar-edit.dev/api/packages?page=${page}`);
 
-        if (!json?.length) break;
+            const headers = cachedMeta.etag && page === 1 ? { 'If-None-Match': cachedMeta.etag } : {};
+            const response = await fetch(`https://api.pulsar-edit.dev/api/packages?page=${page}`, { headers });
 
-        rawPackages = [
-            ...rawPackages,
-            ...json
-        ];
+            // Check if content hasn't changed (304 Not Modified)
+            if (response.status === 304) {
+                console.log('Data not modified (304), using cached packages');
+                rawPackages = cachedMeta.packages || [];
+                break;
+            }
+
+            if (page === 1) {
+                collectedEtag = response.headers.get('etag');
+            }
+
+            const json = await response.json();
+
+            if (!json?.length) break;
+
+            rawPackages = [
+                ...rawPackages,
+                ...json
+            ];
+        }
+
+        // Save the newly fetched data to cache
+        if (rawPackages.length > 0 && collectedEtag) {
+            await saveMetadataCache(rawPackages, collectedEtag);
+        }
     }
 
     if (!rawPackages?.length) {
